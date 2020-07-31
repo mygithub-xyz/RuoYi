@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysEmplMapper">
+    
+    <resultMap type="SysEmpl" id="SysEmplResult">
+        <result property="sid"    column="sid"    />
+        <result property="sname"    column="sname"    />
+        <result property="sage"    column="sage"    />
+        <result property="address"    column="address"    />
+    </resultMap>
+
+    <sql id="selectSysEmplVo">
+        select sid, sname, sage, address from sys_empl
+    </sql>
+
+    <select id="selectSysEmplList" parameterType="SysEmpl" resultMap="SysEmplResult">
+        <include refid="selectSysEmplVo"/>
+        <where>  
+            <if test="sname != null  and sname != ''"> and sname like concat('%', #{sname}, '%')</if>
+            <if test="sage != null "> and sage = #{sage}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysEmplById" parameterType="Long" resultMap="SysEmplResult">
+        <include refid="selectSysEmplVo"/>
+        where sid = #{sid}
+    </select>
+        
+    <insert id="insertSysEmpl" parameterType="SysEmpl" useGeneratedKeys="true" keyProperty="sid">
+        insert into sys_empl
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sname != null and sname != ''">sname,</if>
+            <if test="sage != null">sage,</if>
+            <if test="address != null and address != ''">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sname != null and sname != ''">#{sname},</if>
+            <if test="sage != null">#{sage},</if>
+            <if test="address != null and address != ''">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysEmpl" parameterType="SysEmpl">
+        update sys_empl
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sname != null and sname != ''">sname = #{sname},</if>
+            <if test="sage != null">sage = #{sage},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+        </trim>
+        where sid = #{sid}
+    </update>
+
+    <delete id="deleteSysEmplById" parameterType="Long">
+        delete from sys_empl where sid = #{sid}
+    </delete>
+
+    <delete id="deleteSysEmplByIds" parameterType="String">
+        delete from sys_empl where sid in 
+        <foreach item="sid" collection="array" open="(" separator="," close=")">
+            #{sid}
+        </foreach>
+    </delete>
+
+</mapper>
